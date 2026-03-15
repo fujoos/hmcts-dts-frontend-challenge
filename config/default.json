@@ -1,1 +1,5 @@
-{}
+{
+  "services": {
+    "taskApiUrl": "http://localhost:4000"
+  }
+}
