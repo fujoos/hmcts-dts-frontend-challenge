@@ -1,11 +1,47 @@
 # HMCTS Dev Test Frontend
-This will be the frontend for the brand new HMCTS case management system. As a potential candidate we are leaving
-this in your hands. Please refer to the brief for the complete list of tasks! Complete as much as you can and be
-as creative as you want.
 
-To begin with, you should be able to run this by running:
-1) `yarn install`
-2) `yarn webpack`
-3) `yarn start:dev` or navigate to package.json and run the script manually
+Frontend application for the HMCTS case management technical test. This service provides a simple, user-friendly UI for managing caseworker tasks and integrates with the backend Task API.
 
-You can change the structure however you like! 
+## Features
+
+- View all tasks
+- Create a task (title, optional description, status, due date/time)
+- View task details
+- Edit a task
+- Update task status
+- Delete a task
+
+## Tech Stack
+
+- Node.js + Express
+- Nunjucks templates
+- GOV.UK Frontend styling (via the starter’s asset pipeline)
+- Axios (server-side API calls)
+
+## Prerequisites
+
+This repo is intended to run on **Node 20** (LTS). Running on newer Node versions (e.g. Node 24) may cause dependency/runtime errors.
+
+Recommended versions:
+
+- **Node:** 20.x (tested on 20.11.1)
+- **Yarn:** 3.8.2 (via Corepack)
+
+### Windows note (recommended)
+If you are on Windows, using **nvm-windows** makes switching Node versions straightforward.
+
+## Configuration
+
+Backend API base URL is configured in:
+
+- `config/default.json` → `services.taskApiUrl`
+
+Default:
+- `http://localhost:4000`
+
+## Getting Started
+
+Install dependencies:
+
+```bash
+yarn install
