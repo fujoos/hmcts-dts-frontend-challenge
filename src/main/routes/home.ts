@@ -1,7 +1,7 @@
-import { Application } from 'express'
+import { Application } from 'express';
 
 export default function (app: Application): void {
-  app.get('/', (req, res) => {
-    return res.redirect('/tasks')
-  })
+  app.get('/', (_req, res) => {
+    res.redirect('/tasks');
+  });
 }
