@@ -1,0 +1,63 @@
+{% extends "govuk/template.njk" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/main-dev.css">
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/main-dev.js"></script>
+{% endblock %}
+
+{% block pageTitle %}Task{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ task.title }}</h1>
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Description</dt>
+          <dd class="govuk-summary-list__value">{{ task.description | default('—') }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Status</dt>
+          <dd class="govuk-summary-list__value">{{ task.status }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Due</dt>
+          <dd class="govuk-summary-list__value">{{ task.dueDateTime }}</dd>
+        </div>
+      </dl>
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="/tasks/{{ task.id }}/edit">Edit task</a>
+        &nbsp;|&nbsp;
+        <a class="govuk-link" href="/tasks">Back to list</a>
+      </p>
+
+      <h2 class="govuk-heading-m">Update status</h2>
+      <form method="post" action="/tasks/{{ task.id }}/status">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="status">Status</label>
+          <select class="govuk-select" id="status" name="status">
+            <option value="TODO" {{ 'selected' if task.status == 'TODO' }}>TODO</option>
+            <option value="IN_PROGRESS" {{ 'selected' if task.status == 'IN_PROGRESS' }}>IN_PROGRESS</option>
+            <option value="DONE" {{ 'selected' if task.status == 'DONE' }}>DONE</option>
+          </select>
+        </div>
+        <button class="govuk-button" type="submit">Update status</button>
+      </form>
+
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+      <form method="post" action="/tasks/{{ task.id }}/delete">
+        <button class="govuk-button govuk-button--warning" type="submit">Delete task</button>
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

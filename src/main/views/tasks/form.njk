@@ -1,0 +1,68 @@
+{% extends "govuk/template.njk" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/main-dev.css">
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/main-dev.js"></script>
+{% endblock %}
+
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      {% if errors and errors.length %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+          <div role="alert">
+            <h2 class="govuk-error-summary__title">There is a problem</h2>
+            <div class="govuk-error-summary__body">
+              <ul class="govuk-list govuk-error-summary__list">
+                {% for e in errors %}
+                  <li><a href="#{{ e.field }}">{{ e.message }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <form method="post" action="{{ formAction }}">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="title">Title</label>
+          <input class="govuk-input" id="title" name="title" type="text" value="{{ values.title | default('') }}">
+        </div>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="description">Description (optional)</label>
+          <textarea class="govuk-textarea" id="description" name="description" rows="5">{{ values.description | default('') }}</textarea>
+        </div>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="status">Status</label>
+          <select class="govuk-select" id="status" name="status">
+            {% set current = values.status | default('TODO') %}
+            <option value="TODO" {{ 'selected' if current == 'TODO' }}>TODO</option>
+            <option value="IN_PROGRESS" {{ 'selected' if current == 'IN_PROGRESS' }}>IN_PROGRESS</option>
+            <option value="DONE" {{ 'selected' if current == 'DONE' }}>DONE</option>
+          </select>
+        </div>
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="dueDateTime">Due date/time</label>
+          <input class="govuk-input" id="dueDateTime" name="dueDateTime" type="datetime-local" value="{{ values.dueDateTime | default('') }}">
+        </div>
+
+        <button class="govuk-button" type="submit">Save</button>
+        <a class="govuk-link" href="/tasks">Cancel</a>
+      </form>
+
+    </div>
+  </div>
+{% endblock %}
