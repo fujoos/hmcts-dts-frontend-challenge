@@ -46,7 +46,22 @@ export default function (app: Application): void {
   app.get('/tasks', async (_req, res) => {
     try {
       const tasks = await listTasks();
-      return res.render('tasks/list', { tasks });
+
+      const viewModelTasks = tasks.map((t) => ({
+        ...t,
+        statusLabel:
+          t.status === 'IN_PROGRESS' ? 'In progress' :
+            t.status === 'DONE' ? 'Done' : 'To do',
+        dueDateTimeLabel: new Date(t.dueDateTime).toLocaleString('en-GB', {
+          year: 'numeric',
+          month: 'short',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      }));
+
+      return res.render('tasks/list', { tasks: viewModelTasks });
     } catch (e) {
       return res.render('tasks/list', {
         tasks: [],

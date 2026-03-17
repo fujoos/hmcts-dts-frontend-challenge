@@ -1,0 +1,11 @@
+{% extends "govuk/template.njk" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/main-dev.css">
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  <script src="/main-dev.js"></script>
+{% endblock %}

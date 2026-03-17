@@ -1,0 +1,55 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}Tasks{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <h1 class="govuk-heading-l">Tasks</h1>
+
+      <a class="govuk-button" href="/tasks/new">Create task</a>
+
+      {% if errorMessage %}
+        <div class="govuk-inset-text">{{ errorMessage }}</div>
+      {% endif %}
+
+      {% if tasks and tasks.length > 0 %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header">Title</th>
+              <th class="govuk-table__header">Status</th>
+              <th class="govuk-table__header">Due</th>
+              <th class="govuk-table__header">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
+            {% for task in tasks %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ task.title }}</td>
+                <td class="govuk-table__cell">{{ task.status }}</td>
+                <td class="govuk-table__cell">{{ task.dueDateTime }}</td>
+                <td class="govuk-table__cell">
+                  <a class="govuk-link" href="/tasks/{{ task.id }}">View</a>
+                  &nbsp;|&nbsp;
+                  <a class="govuk-link" href="/tasks/{{ task.id }}/edit">Edit</a>
+                  &nbsp;|&nbsp;
+                  <form method="post" action="/tasks/{{ task.id }}/delete" style="display:inline">
+                    <button class="govuk-link" style="background:none;border:none;padding:0;cursor:pointer" type="submit">
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="govuk-body">No tasks yet.</p>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}
