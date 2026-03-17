@@ -85,7 +85,7 @@ export default function (app: Application): void {
       }));
 
       return res.render('tasks/list', { tasks: viewModelTasks });
-    } catch (e) {
+    } catch {
       return res.render('tasks/list', {
         tasks: [],
         errorMessage: 'Could not load tasks. Is the Task API running on http://localhost:4000?',
@@ -126,7 +126,7 @@ export default function (app: Application): void {
     try {
       const created = await createTask(payload);
       return res.redirect(`/tasks/${created.id}`);
-    } catch (e) {
+    } catch {
       return res.render('tasks/form', {
         pageTitle: 'Create task',
         formAction: '/tasks/new',
@@ -140,19 +140,15 @@ export default function (app: Application): void {
   app.get('/tasks/:id', async (req, res) => {
     try {
       const task = await getTask(req.params.id);
-
-      const viewModelTask = {
-        ...task,
-        statusLabel: statusLabel(task.status),
-        dueDateTimeLabel: formatDueDateTime(task.dueDateTime),
-      };
-
-      return res.render('tasks/view', { task: viewModelTask });
-    } catch (e) {
-      return res.status(404).render('tasks/list', {
-        tasks: [],
-        errorMessage: 'Task not found.',
+      return res.render('tasks/view', {
+        task: {
+          ...task,
+          statusLabel: statusLabel(task.status),
+          dueDateTimeLabel: formatDueDateTime(task.dueDateTime),
+        },
       });
+    } catch {
+      return res.status(404).render('tasks/list', { tasks: [], errorMessage: 'Task not found.' });
     }
   });
 
@@ -172,11 +168,8 @@ export default function (app: Application): void {
         },
         errors: [],
       });
-    } catch (e) {
-      return res.status(404).render('tasks/list', {
-        tasks: [],
-        errorMessage: 'Task not found.',
-      });
+    } catch {
+      return res.status(404).render('tasks/list', { tasks: [], errorMessage: 'Task not found.' });
     }
   });
 
@@ -203,7 +196,7 @@ export default function (app: Application): void {
     try {
       await updateTask(req.params.id, payload);
       return res.redirect(`/tasks/${req.params.id}`);
-    } catch (e) {
+    } catch {
       return res.render('tasks/form', {
         pageTitle: 'Edit task',
         formAction: `/tasks/${req.params.id}/edit`,
@@ -216,8 +209,8 @@ export default function (app: Application): void {
   // STATUS update only
   app.post('/tasks/:id/status', async (req, res) => {
     const status = String(req.body.status ?? '').trim() as TaskStatus;
-
     const allowedStatuses: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE'];
+
     if (!allowedStatuses.includes(status)) {
       return res.status(400).render('tasks/list', { tasks: [], errorMessage: 'Select a valid status.' });
     }
@@ -225,11 +218,8 @@ export default function (app: Application): void {
     try {
       await updateTaskStatus(req.params.id, status);
       return res.redirect(`/tasks/${req.params.id}`);
-    } catch (e) {
-      return res.status(400).render('tasks/list', {
-        tasks: [],
-        errorMessage: 'Could not update status.',
-      });
+    } catch {
+      return res.status(400).render('tasks/list', { tasks: [], errorMessage: 'Could not update status.' });
     }
   });
 
@@ -237,25 +227,24 @@ export default function (app: Application): void {
   app.get('/tasks/:id/delete', async (req, res) => {
     try {
       const task = await getTask(req.params.id);
-
-      const viewModelTask = {
-        ...task,
-        statusLabel: statusLabel(task.status),
-        dueDateTimeLabel: formatDueDateTime(task.dueDateTime),
-      };
-
-      return res.render('tasks/delete', { task: viewModelTask });
-    } catch (e) {
+      return res.render('tasks/delete', {
+        task: {
+          ...task,
+          statusLabel: statusLabel(task.status),
+          dueDateTimeLabel: formatDueDateTime(task.dueDateTime),
+        },
+      });
+    } catch {
       return res.status(404).render('tasks/list', { tasks: [], errorMessage: 'Task not found.' });
     }
   });
 
-  // DELETE (submit)
+  // DELETE submit
   app.post('/tasks/:id/delete', async (req, res) => {
     try {
       await deleteTask(req.params.id);
       return res.redirect('/tasks');
-    } catch (e) {
+    } catch {
       return res.status(400).render('tasks/list', { tasks: [], errorMessage: 'Could not delete task.' });
     }
   });

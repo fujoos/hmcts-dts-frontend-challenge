@@ -10,10 +10,17 @@
 
       <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
 
-      {% set fieldErrors = {} %}
+      {% set titleError = "" %}
+      {% set descriptionError = "" %}
+      {% set statusError = "" %}
+      {% set dueDateTimeError = "" %}
+
       {% if errors and errors.length %}
         {% for e in errors %}
-          {% set fieldErrors = fieldErrors | merge({ (e.field): e.message }) %}
+          {% if e.field == "title" %}{% set titleError = e.message %}{% endif %}
+          {% if e.field == "description" %}{% set descriptionError = e.message %}{% endif %}
+          {% if e.field == "status" %}{% set statusError = e.message %}{% endif %}
+          {% if e.field == "dueDateTime" %}{% set dueDateTimeError = e.message %}{% endif %}
         {% endfor %}
 
         <div class="govuk-error-summary" data-module="govuk-error-summary">
@@ -32,52 +39,44 @@
 
       <form method="post" action="{{ formAction }}">
 
-        <div class="govuk-form-group {% if fieldErrors.title %}govuk-form-group--error{% endif %}">
+        <div class="govuk-form-group {% if titleError %}govuk-form-group--error{% endif %}">
           <label class="govuk-label" for="title">Title</label>
-          {% if fieldErrors.title %}
-            <p class="govuk-error-message">
-              <span class="govuk-visually-hidden">Error:</span> {{ fieldErrors.title }}
-            </p>
+          {% if titleError %}
+            <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ titleError }}</p>
           {% endif %}
-          <input class="govuk-input {% if fieldErrors.title %}govuk-input--error{% endif %}"
+          <input class="govuk-input {% if titleError %}govuk-input--error{% endif %}"
                  id="title" name="title" type="text"
                  value="{{ values.title | default('') }}">
         </div>
 
-        <div class="govuk-form-group {% if fieldErrors.description %}govuk-form-group--error{% endif %}">
+        <div class="govuk-form-group {% if descriptionError %}govuk-form-group--error{% endif %}">
           <label class="govuk-label" for="description">Description (optional)</label>
-          {% if fieldErrors.description %}
-            <p class="govuk-error-message">
-              <span class="govuk-visually-hidden">Error:</span> {{ fieldErrors.description }}
-            </p>
+          {% if descriptionError %}
+            <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ descriptionError }}</p>
           {% endif %}
-          <textarea class="govuk-textarea {% if fieldErrors.description %}govuk-textarea--error{% endif %}"
+          <textarea class="govuk-textarea {% if descriptionError %}govuk-textarea--error{% endif %}"
                     id="description" name="description" rows="5">{{ values.description | default('') }}</textarea>
         </div>
 
-        <div class="govuk-form-group {% if fieldErrors.status %}govuk-form-group--error{% endif %}">
+        <div class="govuk-form-group {% if statusError %}govuk-form-group--error{% endif %}">
           <label class="govuk-label" for="status">Status</label>
-          {% if fieldErrors.status %}
-            <p class="govuk-error-message">
-              <span class="govuk-visually-hidden">Error:</span> {{ fieldErrors.status }}
-            </p>
+          {% if statusError %}
+            <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ statusError }}</p>
           {% endif %}
           {% set current = values.status | default('TODO') %}
-          <select class="govuk-select {% if fieldErrors.status %}govuk-select--error{% endif %}" id="status" name="status">
+          <select class="govuk-select {% if statusError %}govuk-select--error{% endif %}" id="status" name="status">
             <option value="TODO" {{ 'selected' if current == 'TODO' }}>To do</option>
             <option value="IN_PROGRESS" {{ 'selected' if current == 'IN_PROGRESS' }}>In progress</option>
             <option value="DONE" {{ 'selected' if current == 'DONE' }}>Done</option>
           </select>
         </div>
 
-        <div class="govuk-form-group {% if fieldErrors.dueDateTime %}govuk-form-group--error{% endif %}">
+        <div class="govuk-form-group {% if dueDateTimeError %}govuk-form-group--error{% endif %}">
           <label class="govuk-label" for="dueDateTime">Due date/time</label>
-          {% if fieldErrors.dueDateTime %}
-            <p class="govuk-error-message">
-              <span class="govuk-visually-hidden">Error:</span> {{ fieldErrors.dueDateTime }}
-            </p>
+          {% if dueDateTimeError %}
+            <p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ dueDateTimeError }}</p>
           {% endif %}
-          <input class="govuk-input {% if fieldErrors.dueDateTime %}govuk-input--error{% endif %}"
+          <input class="govuk-input {% if dueDateTimeError %}govuk-input--error{% endif %}"
                  id="dueDateTime" name="dueDateTime" type="datetime-local"
                  value="{{ values.dueDateTime | default('') }}">
         </div>
